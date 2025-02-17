@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Récupère le code depuis le dépôt Git
-                git 'https://github.com/AnassJarrah/MyWebApi.git' // Remplace par l'URL de ton dépôt
+                git branch : 'main', url: 'https://github.com/AnassJarrah/MyWebApi.git' // Remplace par l'URL de ton dépôt
             }
         }
         
