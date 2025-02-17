@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/AnassJarrah/MyWebApi.git'
+            }
+        }
+
+        stage('Restore Dependencies') {
+            steps {
+	        bat 'dotnet add MyWebApi.Tests package xunit'
+                bat 'dotnet add MyWebApi.Tests package xunit.runner.visualstudio'
+                bat 'dotnet add MyWebApi.Tests package Microsoft.NET.Test.Sdk'
+                bat 'dotnet restore'
+            }
+        }
+
+        stage('Clean and Build') {
+        steps {
+           bat 'dotnet clean'
+           bat 'dotnet nuget locals all --clear'
+           bat 'dotnet restore'
+           bat 'dotnet build --configuration Release'
+        }
+      }
+
+        stage('Run Tests') {
+            steps {
+                bat 'dotnet test --configuration Release --verbosity normal'
+            }
+        }
+
+        stage('Publish') {
+            steps {
+                bat 'dotnet publish -c Release -o publish_output'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Pipeline finished"
+        }
+    }
+}
+
+
